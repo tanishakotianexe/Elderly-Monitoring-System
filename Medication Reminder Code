@@ -1,0 +1,42 @@
+#include <Wire.h>
+#include "RTClib.h" // Include the RTC library
+#define BUZZER_PIN 9 // Define the pin for the buzzer
+ 
+RTC_DS1307 rtc; // Create an instance of the RTC object
+ 
+void setup() {
+  pinMode(BUZZER_PIN, OUTPUT); // Set the buzzer pin as output
+  
+  // Initialize the Serial port
+  Serial.begin(9600);
+  
+  // Initialize the RTC
+  if (!rtc.begin()) {
+    Serial.println("Couldn't find RTC");
+    while (1);
+  }
+  
+  // If the RTC isn't running, set it to the current date & time
+  if (!rtc.isrunning()) {
+    Serial.println("RTC is NOT running, let's set the time!");
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+  }
+}
+ 
+void loop() {
+  // Get the current time
+  DateTime now = rtc.now();
+  // Check if it's the specific time you want to activate the buzzer
+  if (now.hour() == 15 && now.minute() == 54 && now.second() == 0) {
+    activateBuzzer(); // If yes, activate the buzzer
+  }
+  if (now.hour() == 15 && now.minute() == 56 && now.second() == 0) {
+    activateBuzzer(); // If yes, activate the buzzer
+  }
+}
+ 
+void activateBuzzer() {
+  digitalWrite(BUZZER_PIN, HIGH); // Turn on the buzzer
+  delay(10000); // Wait for 10 seconds
+  digitalWrite(BUZZER_PIN, LOW); // Turn off the buzzer
+}
